@@ -1,3 +1,5 @@
+#pragma warning disable CS8524
+
 namespace Go;
 
 public class Board
@@ -22,7 +24,7 @@ public class Board
         {
             for (var x = 0; x < Size; x++)
             {
-                Console.Write('.');
+                Console.Write(GetToken(GetState(x, y)));
 
                 if (x != Size - 1)
                 {
@@ -32,6 +34,21 @@ public class Board
 
             Console.WriteLine();
         }
+    }
+
+    public SpaceState GetState(int x, int y)
+    {
+        return Spaces[x + Size * y];
+    }
+
+    public char GetToken(SpaceState state)
+    {
+        return state switch
+        {
+            SpaceState.BlackStone => '○',
+            SpaceState.WhiteStone => '⬤',
+            SpaceState.Empty => '·',
+        };
     }
 }
 
