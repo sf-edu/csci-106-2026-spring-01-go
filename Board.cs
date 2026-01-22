@@ -18,6 +18,17 @@ public class Board
         }
     }
 
+    public void EnterAlternateBuffer()
+    {
+        Console.Write("\x1b[?1049h");
+        Console.Clear();
+    }
+
+    public void LeaveAlternateBuffer()
+    {
+        Console.Write("\x1b[?1049l");
+    }
+
     public void Render()
     {
         for (var y = 0; y < Size; y++)
