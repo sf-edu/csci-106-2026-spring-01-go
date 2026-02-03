@@ -4,21 +4,36 @@ namespace Go;
 
 public class Board
 {
+	private readonly InputHandler InputHandler;
     private readonly Cursor Cursor;
     private readonly int Size;
 
     private SpaceState[] Spaces;
+    private bool IsPlayer1;
 
-    public Board(int size, Cursor cursor)
+    public Board(InputHandler inputHandler, int size, Cursor cursor)
     {
+		InputHandler = inputHandler;
         Cursor = cursor;
         Size = size;
+
+        IsPlayer1 = true;
 
         Spaces = new SpaceState[size * size];
         for (var i = 0; i < Spaces.Length; i++)
         {
             Spaces[i] = SpaceState.Empty;
         }
+    }
+
+    public void Update()
+    {
+        switch (InputHandler.CurrentEvent)
+		{
+			case InputEvent.PlaceToken:
+                Place();
+				break;
+		}
     }
 
     private const string ENTER_ALT_BUFFER = "\x1b[?1049h";
@@ -68,23 +83,40 @@ public class Board
             buffer += "\n";
         }
 
+        var currentPlayer = IsPlayer1 ? "Black" : "White";
+        buffer += $"\nCurrent player: {GetToken(CurrentToken, false)} {currentPlayer}";
+
         Console.Write(buffer);
     }
 
-    public SpaceState GetState(int x, int y)
-    {
-        return Spaces[x + Size * y];
-    }
+    private SpaceState GetState(int x, int y) => Spaces[GetIndex(x, y)];
+    private SpaceState CursorState => Spaces[CursorIndex];
+
+    private int GetIndex(int x, int y) => x + Size * y;
+    private int CursorIndex => GetIndex(Cursor.X, Cursor.Y);
+
+    public SpaceState CurrentToken => IsPlayer1
+        ? SpaceState.BlackStone
+        : SpaceState.WhiteStone;
 
     public char GetToken(SpaceState state, bool cursor)
     {
         return (state, cursor) switch
         {
             (SpaceState.BlackStone, _) => '○',
-            (SpaceState.WhiteStone, _) => '⬤',
+            (SpaceState.WhiteStone, _) => '●',
             (SpaceState.Empty, false) => '·',
             (SpaceState.Empty, true) => '⊗',
         };
+    }
+
+    public void Place()
+    {
+        if (CursorState == SpaceState.Empty)
+        {
+            Spaces[Cursor.X + Size * Cursor.Y] = CurrentToken;
+            IsPlayer1 = !IsPlayer1;
+        }
     }
 }
 

@@ -6,15 +6,25 @@ public static class Program
     {
         var size = 19;
         
-        var cursor = new Cursor(size);
-        var board = new Board(size, cursor);
+		var inputHandler = new InputHandler();
+        var cursor = new Cursor(inputHandler, size);
+        var board = new Board(inputHandler, size, cursor);
 
         board.Init();
 
         while (true)
         {
+			if (inputHandler.CurrentEvent == InputEvent.Quit)
+			{
+				break;
+			}
+			
+			cursor.Update();
+			board.Update();
+
             board.Render();
-            cursor.HandleInput();
+
+            inputHandler.HandleInput();
         }
         
         board.Cleanup();

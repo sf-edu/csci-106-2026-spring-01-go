@@ -5,11 +5,15 @@ public class Cursor
 	public int X { get; private set; }
 	public int Y { get; private set; }
 
+	private readonly InputHandler InputHandler;
+
 	private readonly int Min = 0;
 	private readonly int Max;
 
-	public Cursor(int max)
+	public Cursor(InputHandler inputHandler, int max)
 	{
+		InputHandler = inputHandler;
+
 		X = max / 2;
 		Y = max / 2;
 		Max = max;
@@ -20,31 +24,23 @@ public class Cursor
 		return X == x && Y == y;
 	}
 
-	public void HandleInput()
+	public void Update()
 	{
-		switch (Console.ReadKey(true).Key)
+		switch (InputHandler.CurrentEvent)
 		{
-			case ConsoleKey.W:
-			case ConsoleKey.UpArrow:
-			case ConsoleKey.K:
+			case InputEvent.MoveUp:
 				Y = Clamp(Y - 1);
 				break;
-
-			case ConsoleKey.A:
-			case ConsoleKey.LeftArrow:
-			case ConsoleKey.H:
+			
+			case InputEvent.MoveLeft:
 				X = Clamp(X - 1);
 				break;
 
-			case ConsoleKey.S:
-			case ConsoleKey.DownArrow:
-			case ConsoleKey.J:
+			case InputEvent.MoveDown:
 				Y = Clamp(Y + 1);
 				break;
 
-			case ConsoleKey.D:
-			case ConsoleKey.RightArrow:
-			case ConsoleKey.L:
+			case InputEvent.MoveRight:
 				X = Clamp(X + 1);
 				break;
 		}
