@@ -18,19 +18,27 @@ public class Board
         }
     }
 
-    public void EnterAlternateBuffer()
+    private const string ENTER_ALT_BUFFER = "\x1b[?1049h";
+    private const string LEAVE_ALT_BUFFER = "\x1b[?1049l";
+
+    private const string HIDE_CURSOR = "\u001b[?25l";
+    private const string SHOW_CURSOR = "\u001b[?25h";
+
+    public void Init()
     {
-        Console.Write("\x1b[?1049h");
+        Console.Write(ENTER_ALT_BUFFER + HIDE_CURSOR);
         Console.Clear();
     }
 
-    public void LeaveAlternateBuffer()
+    public void Cleanup()
     {
-        Console.Write("\x1b[?1049l");
+        Console.Write(LEAVE_ALT_BUFFER + SHOW_CURSOR);
     }
 
     public void Render()
     {
+        Console.SetCursorPosition(0, 0);
+
         for (var y = 0; y < Size; y++)
         {
             for (var x = 0; x < Size; x++)

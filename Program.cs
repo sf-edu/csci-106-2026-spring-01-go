@@ -9,7 +9,7 @@ public static class Program
         var board = new Board(size);
         var cursor = new Cursor(size);
 
-        board.EnterAlternateBuffer();
+        board.Init();
 
         while (true)
         {
@@ -17,7 +17,7 @@ public static class Program
             cursor.HandleInput();
         }
         
-        board.LeaveAlternateBuffer();
+        board.Cleanup();
     }
 }
 
