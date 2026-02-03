@@ -6,8 +6,8 @@ public static class Program
     {
         var size = 19;
         
-        var board = new Board(size);
         var cursor = new Cursor(size);
+        var board = new Board(size, cursor);
 
         board.Init();
 

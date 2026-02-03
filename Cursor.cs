@@ -15,6 +15,11 @@ public class Cursor
 		Max = max;
 	}
 
+	public bool IsAt(int x, int y)
+	{
+		return X == x && Y == y;
+	}
+
 	public void HandleInput()
 	{
 		switch (Console.ReadKey(true).Key)

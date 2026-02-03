@@ -4,14 +4,17 @@ namespace Go;
 
 public class Board
 {
-    private int Size;
+    private readonly Cursor Cursor;
+    private readonly int Size;
+
     private SpaceState[] Spaces;
 
-    public Board(int size)
+    public Board(int size, Cursor cursor)
     {
+        Cursor = cursor;
         Size = size;
-        Spaces = new SpaceState[size * size];
 
+        Spaces = new SpaceState[size * size];
         for (var i = 0; i < Spaces.Length; i++)
         {
             Spaces[i] = SpaceState.Empty;
@@ -35,24 +38,37 @@ public class Board
         Console.Write(LEAVE_ALT_BUFFER + SHOW_CURSOR);
     }
 
+    private const string BLINK_START = "\u001B[5m";
+    private const string BLINK_RESET = "\u001B[0m";
+
     public void Render()
     {
         Console.SetCursorPosition(0, 0);
+        var buffer = string.Empty;
 
         for (var y = 0; y < Size; y++)
         {
             for (var x = 0; x < Size; x++)
             {
-                Console.Write(GetToken(GetState(x, y)));
+                var cursor = Cursor.IsAt(x, y);
+                var token = GetToken(GetState(x, y), cursor).ToString();
+
+                if (cursor) {
+                    token = BLINK_START + token + BLINK_RESET;
+                }
+
+                buffer += token;
 
                 if (x != Size - 1)
                 {
-                    Console.Write(' ');
+                    buffer += " ";
                 }
             }
 
-            Console.WriteLine();
+            buffer += "\n";
         }
+
+        Console.Write(buffer);
     }
 
     public SpaceState GetState(int x, int y)
@@ -60,13 +76,14 @@ public class Board
         return Spaces[x + Size * y];
     }
 
-    public char GetToken(SpaceState state)
+    public char GetToken(SpaceState state, bool cursor)
     {
-        return state switch
+        return (state, cursor) switch
         {
-            SpaceState.BlackStone => '○',
-            SpaceState.WhiteStone => '⬤',
-            SpaceState.Empty => '·',
+            (SpaceState.BlackStone, _) => '○',
+            (SpaceState.WhiteStone, _) => '⬤',
+            (SpaceState.Empty, false) => '·',
+            (SpaceState.Empty, true) => '⊗',
         };
     }
 }
