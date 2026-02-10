@@ -110,6 +110,20 @@ public class Board
         };
     }
 
+    // TODO: Ensure stones can't be placed where they would immediately get
+    //       captured.
+    // TODO: Ensure stones can't be placed in a way that reverts the board
+    //       to the previous state.
+    //
+    // RESOURCE: https://github.com/sf-edu/csci-105-2025-fall-minesweeper/blob/2c7a6b74a7dad5bd14d7d00f5f6f8092abd43ada/Program.cs#L228-L267
+    //           Flood fill implementation from previous semester's Minesweeper
+    //           game, may not end up being useful
+    //
+    // Need to check cardinal directions for pieces and determine what groups
+    // they belong to and what implications placing in the given spot has for
+    // capturing.
+    //
+    // IDEA: Hash map for storing explored tokens and their positions?
     public void Place()
     {
         if (CursorState == SpaceState.Empty)
