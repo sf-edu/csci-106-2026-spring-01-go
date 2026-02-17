@@ -5,7 +5,7 @@ public static class Program
     public static void Main()
     {
         var size = 19;
-        
+
 		var inputHandler = new InputHandler();
         var cursor = new Cursor(inputHandler, size);
         var board = new Board(inputHandler, size, cursor);
@@ -18,7 +18,7 @@ public static class Program
 			{
 				break;
 			}
-			
+
 			cursor.Update();
 			board.Update();
 
@@ -26,8 +26,7 @@ public static class Program
 
             inputHandler.HandleInput();
         }
-        
+
         board.Cleanup();
     }
 }
-
